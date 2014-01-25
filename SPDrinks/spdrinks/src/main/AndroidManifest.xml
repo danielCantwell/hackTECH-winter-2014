@@ -16,6 +16,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.spdalpha.spdrinks.UserInfo"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName="com.spdalpha.spdrinks.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="MainActivity" />
+        </activity>
+        <activity
+            android:name="com.spdalpha.spdrinks.Settings"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName="com.spdalpha.spdrinks.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="MainActivity" />
+        </activity>
+        <activity
+            android:name="com.spdalpha.spdrinks.DrinkingSessionActivity"
+            android:label="@string/title_activity_drinking_session"
+            android:parentActivityName="com.spdalpha.spdrinks.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="MainActivity" />
+        </activity>
     </application>
 
 </manifest>

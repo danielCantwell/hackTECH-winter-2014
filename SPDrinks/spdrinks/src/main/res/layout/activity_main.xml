@@ -1,7 +1,39 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.spdalpha.spdrinks.MainActivity"
-    tools:ignore="MergeRootFrame" />
+    tools:ignore="MergeRootFrame" >
+
+    <Button
+        android:layout_width="224dp"
+        android:layout_height="204dp"
+        android:text="Triple tap\nto\nstart\ntracking!"
+        android:id="@+id/button_startTracking"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="55dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="History"
+        android:id="@+id/button_history"
+        android:layout_gravity="center"
+        android:layout_marginTop="58dp"
+        android:layout_below="@+id/button_startTracking"
+        android:layout_alignLeft="@+id/button_settings"
+        android:layout_alignRight="@+id/button_settings" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:id="@+id/button_settings"
+        android:layout_marginTop="31dp"
+        android:layout_below="@+id/button_history"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

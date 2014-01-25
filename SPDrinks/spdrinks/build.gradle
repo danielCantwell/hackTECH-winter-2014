@@ -31,4 +31,6 @@ android {
 }
 
 dependencies {
+    compile 'com.android.support:support-v4:18.0.0'
+    compile files('C:/Users/Daniel/Documents/GitHub/hackTECH-winter-2014/SPDrinks/guava-14.0.1.jar')
 }
