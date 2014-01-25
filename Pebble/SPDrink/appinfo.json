@@ -1,0 +1,17 @@
+{
+  "uuid": "4477bd3f-a725-412f-a522-eba497e6d216",
+  "shortName": "SPDrink",
+  "longName": "SPDrink",
+  "companyName": "MakeAwesomeHappen",
+  "versionCode": 1,
+  "versionLabel": "1.0.0",
+  "watchapp": {
+    "watchface": false
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+  "resources": {
+    "media": []
+  }
+}
