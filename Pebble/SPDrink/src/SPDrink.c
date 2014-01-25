@@ -1,7 +1,9 @@
 #include <pebble.h>
 
 static Window *window;
+static InverterLayer *inverter_display_layer;
 static Layer *drink_display_layer;
+static Layer *drink_badge_layer;
 static TextLayer *text_layer;
 static int dranks = 0;
 static int maxDranks = 10;
@@ -13,13 +15,13 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 }
 
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
-  if (dranks <10){
+  if (dranks <20){
   dranks += 1;
   snprintf(buf,sizeof(buf),"%d",dranks);
   text_layer_set_text(text_layer, buf);
   }
   else {
-  text_layer_set_text(text_layer,"ALCOHOLIC");
+ // text_layer_set_text(text_layer,"ALCOHOLIC");
   }
 }
 
@@ -31,7 +33,7 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
   }
   else {
 	  
-	  text_layer_set_text(text_layer, "you should drink more!");
+	  //text_layer_set_text(text_layer, "drink more!");
   }
 }
 
@@ -44,36 +46,62 @@ static void click_config_provider(void *context) {
 static void drink_display_layer_update_callback(Layer *layer, GContext* ctx) {
 	Layer *window_layer = window_get_root_layer(window);
     GRect bounds = layer_get_bounds(window_layer);
-    int drinkOriginY = (bounds.size.h-50)/maxDranks*(maxDranks-dranks) + 40;
-    int drinkOriginX = 30;
-    int drinkWidth = bounds.size.w - 2*drinkOriginX;
-    int drinkHeight = bounds.size.h - drinkOriginY - 10;
-	GRect drinkRect = GRect(drinkOriginX,drinkOriginY,drinkWidth,drinkHeight);
-	graphics_fill_rect(ctx, drinkRect,0,GCornerNone);
+    if (dranks<maxDranks){
+		int drinkOriginY = (bounds.size.h-50)/maxDranks*(maxDranks-dranks) + 40;
+		int drinkOriginX = 30;
+		int drinkWidth = bounds.size.w - 2*drinkOriginX;
+		int drinkHeight = bounds.size.h - drinkOriginY - 10;
+		GRect drinkRect = GRect(drinkOriginX,drinkOriginY,drinkWidth,drinkHeight);
+		graphics_fill_rect(ctx, drinkRect,0,GCornerNone);
+	}
+	else{
+		int drinkOriginY = (bounds.size.h-50)/maxDranks*(maxDranks-maxDranks) + 40;
+		int drinkOriginX = 30;
+		int drinkWidth = bounds.size.w - 2*drinkOriginX;
+		int drinkHeight = bounds.size.h - drinkOriginY - 10;
+		GRect drinkRect = GRect(drinkOriginX,drinkOriginY,drinkWidth,drinkHeight);
+		graphics_fill_rect(ctx, drinkRect,0,GCornerNone);
+	}
+
 	//graphics_draw_line(ctx,GPoint(10,10),GPoint(50,50));
+}
+
+static void drink_badge_layer_update_callback(Layer *layer, GContext* ctx){
+	Layer *window_layer = window_get_root_layer(window);
+    GRect bounds = layer_get_bounds(window_layer);
+    graphics_context_set_fill_color(ctx, GColorWhite);
+    graphics_fill_circle(ctx,GPoint(71,73),13);
 }
 
 static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
   
-  
-  
-  text_layer = text_layer_create((GRect) { .origin = { 0, 60 }, .size = { bounds.size.w, 21 } });
-  text_layer_set_text(text_layer, "Begin Drinking");
+  text_layer = text_layer_create((GRect) { .origin = { 50, 60 }, .size = { bounds.size.w-100, 21 } });
+  text_layer_set_background_color(text_layer, GColorClear);
+  text_layer_set_text(text_layer, "0");
   text_layer_set_font(text_layer, fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21));
   text_layer_set_text_alignment(text_layer, GTextAlignmentCenter);
   
-  layer_add_child(window_layer, text_layer_get_layer(text_layer));
+  drink_badge_layer = layer_create(bounds);
+  layer_set_update_proc(drink_badge_layer, drink_badge_layer_update_callback);
   
+ // inverter_display_layer = inverter_layer_create(GRect(50,60,bounds.size.w-100,21));
   drink_display_layer = layer_create(bounds);
   //inverter_layer_init(&drink_display_layer,GRect(0,0,bounds.size.w,bounds.size.h));
   layer_set_update_proc(drink_display_layer, drink_display_layer_update_callback);
+  
+ 
+  
+ // layer_add_child(window_layer, inverter_layer_get_layer(inverter_display_layer));
   layer_add_child(window_layer, drink_display_layer);
-}
+  layer_add_child(window_layer, drink_badge_layer);
+   layer_add_child(window_layer, text_layer_get_layer(text_layer));
+ }
 
 static void window_unload(Window *window) {
   text_layer_destroy(text_layer);
+  inverter_layer_destroy(inverter_display_layer);
   layer_destroy(drink_display_layer);
 }
 
