@@ -92,28 +92,28 @@ static void drink_display_layer_update_callback(Layer *layer, GContext* ctx) {
 
   //if under maxDranks, then image gets updated
   int yMax = 48;
-  int yBuffer = 12;
+  int yBuffer = 24;
   int yMin = yMax + yBuffer;
     if (dranks<maxDranks){
 		int drinkOriginY = (bounds.size.h-yMin)/maxDranks*(maxDranks-dranks) + yMax;
-		int drinkOriginX = 38;
-		int drinkWidth = bounds.size.w - 2*drinkOriginX;
+		int drinkOriginX = 27;
+		int drinkWidth = 72;
 		int drinkHeight = bounds.size.h - drinkOriginY - yBuffer;
 		GRect drinkRect = GRect(drinkOriginX,drinkOriginY,drinkWidth,drinkHeight);
-		graphics_fill_rect(ctx, drinkRect,2,GCornersAll);
+		graphics_fill_rect(ctx, drinkRect,0,GCornerNone);
     graphics_context_set_compositing_mode(ctx, GCompOpAnd);
-    graphics_draw_bitmap_in_rect(ctx,foamSprite,GRect(drinkOriginX+1,drinkOriginY-8,66,8));
+    graphics_draw_bitmap_in_rect(ctx,foamSprite,GRect(drinkOriginX,drinkOriginY-14,72,14));
 	}
 	// past maxDranks, drinks are counted, but image does not change
 	else{
 		int drinkOriginY = (bounds.size.h-yMin)/maxDranks*(maxDranks-maxDranks) + yMax;
-		int drinkOriginX = 38;
-		int drinkWidth = bounds.size.w - 2*drinkOriginX;
+		int drinkOriginX = 27;
+		int drinkWidth = 72;
 		int drinkHeight = bounds.size.h - drinkOriginY - yBuffer;
 		GRect drinkRect = GRect(drinkOriginX,drinkOriginY,drinkWidth,drinkHeight);
-		graphics_fill_rect(ctx, drinkRect,2,GCornersAll);
+		graphics_fill_rect(ctx, drinkRect,0,GCornerNone);
     graphics_context_set_compositing_mode(ctx, GCompOpAnd);
-    graphics_draw_bitmap_in_rect(ctx,foamSprite,GRect(drinkOriginX+1,drinkOriginY-8,66,8));
+    graphics_draw_bitmap_in_rect(ctx,foamSprite,GRect(drinkOriginX,drinkOriginY-14,72,14));
 	}
 	
 	//draw white number badge background
