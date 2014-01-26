@@ -8,6 +8,7 @@ static Layer *drink_display_layer;
 static Layer *drink_badge_layer;
 static GBitmap *beerSprite;
 static GBitmap *foamSprite;
+static GBitmap *fluidSprite;
 
 //static BitmapLayer *beer_image_layer;
 //static ResHandle beerSprite_handle;
@@ -25,10 +26,10 @@ static void statsWindow_load(Window *mainWindow) {
   GRect bounds = layer_get_bounds(window_layer);
   
   //sets up drink number text tag
-  stats_layer = text_layer_create((GRect) { .origin = { 50, 60 }, .size = { bounds.size.w-100, 22 } });
+  stats_layer = text_layer_create((GRect) { .origin = { 50, 60 }, .size = { bounds.size.w-100, 42 } });
   text_layer_set_background_color(stats_layer, GColorClear);
   text_layer_set_text(stats_layer, "test?");
-  text_layer_set_font(stats_layer, fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21));
+  text_layer_set_font(stats_layer, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD));
   text_layer_set_text_alignment(stats_layer, GTextAlignmentCenter);
   layer_add_child(window_layer,text_layer_get_layer(stats_layer));
   
@@ -100,8 +101,9 @@ static void drink_display_layer_update_callback(Layer *layer, GContext* ctx) {
 		int drinkWidth = 72;
 		int drinkHeight = bounds.size.h - drinkOriginY - yBuffer;
 		GRect drinkRect = GRect(drinkOriginX,drinkOriginY,drinkWidth,drinkHeight);
-		graphics_fill_rect(ctx, drinkRect,0,GCornerNone);
+		//graphics_fill_rect(ctx, drinkRect,0,GCornerNone);
     graphics_context_set_compositing_mode(ctx, GCompOpAnd);
+    graphics_draw_bitmap_in_rect(ctx,fluidSprite,drinkRect);
     graphics_draw_bitmap_in_rect(ctx,foamSprite,GRect(drinkOriginX,drinkOriginY-14,72,14));
 	}
 	// past maxDranks, drinks are counted, but image does not change
@@ -111,14 +113,15 @@ static void drink_display_layer_update_callback(Layer *layer, GContext* ctx) {
 		int drinkWidth = 72;
 		int drinkHeight = bounds.size.h - drinkOriginY - yBuffer;
 		GRect drinkRect = GRect(drinkOriginX,drinkOriginY,drinkWidth,drinkHeight);
-		graphics_fill_rect(ctx, drinkRect,0,GCornerNone);
+		//graphics_fill_rect(ctx, drinkRect,0,GCornerNone);
     graphics_context_set_compositing_mode(ctx, GCompOpAnd);
+    graphics_draw_bitmap_in_rect(ctx,fluidSprite,drinkRect);
     graphics_draw_bitmap_in_rect(ctx,foamSprite,GRect(drinkOriginX,drinkOriginY-14,72,14));
 	}
 	
 	//draw white number badge background
-	graphics_context_set_fill_color(ctx, GColorWhite);
-  graphics_fill_circle(ctx,GPoint(71,73),13);
+	//graphics_context_set_fill_color(ctx, GColorWhite);
+  //graphics_fill_circle(ctx,GPoint(71,73),13);
 }
 
 
@@ -128,10 +131,11 @@ static void window_load(Window *mainWindow) {
   GRect bounds = layer_get_bounds(window_layer);
   
   //sets up drink number text tag
-  count_layer = text_layer_create((GRect) { .origin = { 50, 60 }, .size = { bounds.size.w-100, 21 } });
+  count_layer = text_layer_create((GRect) { .origin = { 27, 95 }, .size = { 70, 34 } });
   text_layer_set_background_color(count_layer, GColorClear);
-  text_layer_set_text(count_layer, "0");
-  text_layer_set_font(count_layer, fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21));
+  snprintf(buf,sizeof(buf),"%d",dranks);
+  text_layer_set_text(count_layer, buf);
+  text_layer_set_font(count_layer, fonts_get_system_font(FONT_KEY_BITHAM_34_MEDIUM_NUMBERS));
   text_layer_set_text_alignment(count_layer, GTextAlignmentCenter);
   
   // sets up the white badge for drink number
@@ -195,7 +199,7 @@ static void init(void) {
   //beerSprite_handle = resource_get_handle(RESOURCES_ID_BEERSPRITE);
   beerSprite = gbitmap_create_with_resource(RESOURCE_ID_BEERSPRITE);
   foamSprite = gbitmap_create_with_resource(RESOURCE_ID_FOAMSPRITE);
-  
+  fluidSprite = gbitmap_create_with_resource(RESOURCE_ID_FLUIDSPRITE);
   
 }
 
