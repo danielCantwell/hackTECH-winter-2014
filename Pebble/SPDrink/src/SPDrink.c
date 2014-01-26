@@ -76,7 +76,34 @@ static void click_config_provider(void *context) {
 }
 
 
+void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
+    static char time_text[] = "00:00";
 
+    char *time_format;
+
+    if (clock_is_24h_style()) {
+      time_format = "%R";
+    } else {
+      time_format = "%I:%M";
+    }
+
+    strftime(time_text, sizeof(time_text), time_format, tick_time);
+
+    // Kludge to handle lack of non-padded hour format string
+    // for twelve hour clock.
+    if (!clock_is_24h_style() && (time_text[0] == '0')) {
+      memmove(time_text, &time_text[1], sizeof(time_text) - 1);
+    }
+    Layer *window_layer = window_get_root_layer(mainWindow);
+    GRect bounds = layer_get_bounds(window_layer);
+    top_banner_layer = text_layer_create((GRect) { .origin = { 0, 0 }, .size = { bounds.size.w, 30 } });
+    text_layer_set_background_color(top_banner_layer, GColorClear);
+    text_layer_set_font(top_banner_layer, fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK));
+    text_layer_set_text_alignment(top_banner_layer, GTextAlignmentCenter);
+    text_layer_set_text(top_banner_layer, time_text);
+    layer_add_child(window_layer, text_layer_get_layer(top_banner_layer));
+    
+}
 //animates the drink level as beverages get counted
 static void drink_display_layer_update_callback(Layer *layer, GContext* ctx) {
 	Layer *window_layer = window_get_root_layer(mainWindow);
@@ -153,16 +180,15 @@ static void window_load(Window *mainWindow) {
   layer_set_update_proc(drink_display_layer, drink_display_layer_update_callback);
  
   // Sets up a top heading banner
-  top_banner_layer = text_layer_create((GRect) { .origin = { 0, 0 }, .size = { bounds.size.w, 21 } });
-  text_layer_set_background_color(top_banner_layer, GColorClear);
+  
+  /*text_layer_set_background_color(top_banner_layer, GColorClear);
   text_layer_set_text(top_banner_layer, "SPDrinks");
   text_layer_set_font(top_banner_layer, fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21));
   text_layer_set_text_alignment(top_banner_layer, GTextAlignmentCenter);
-  
+  */
   // adds all the layers as children to mainWindow
   
   layer_add_child(window_layer, drink_display_layer);
-  layer_add_child(window_layer, text_layer_get_layer(top_banner_layer));
 //  layer_add_child(window_layer, drink_badge_layer);
   layer_add_child(window_layer, text_layer_get_layer(count_layer));
  }
@@ -200,13 +226,14 @@ static void init(void) {
   beerSprite = gbitmap_create_with_resource(RESOURCE_ID_BEERSPRITE);
   foamSprite = gbitmap_create_with_resource(RESOURCE_ID_FOAMSPRITE);
   fluidSprite = gbitmap_create_with_resource(RESOURCE_ID_FLUIDSPRITE);
-  
+  tick_timer_service_subscribe(MINUTE_UNIT, handle_minute_tick);
 }
 
 static void deinit(void) {
   window_destroy(mainWindow);
   gbitmap_destroy(beerSprite);
   gbitmap_destroy(foamSprite);
+  tick_timer_service_unsubscribe();
 }
 
 int main(void) {
