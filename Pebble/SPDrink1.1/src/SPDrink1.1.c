@@ -7,7 +7,6 @@ static TextLayer *top_banner_layer;
 static Layer *drink_display_layer;
 static Layer *drink_badge_layer;
 static GBitmap *beerSprite;
-static GBitmap *foamSprite;
 
 //static BitmapLayer *beer_image_layer;
 //static ResHandle beerSprite_handle;
@@ -35,7 +34,7 @@ static void statsWindow_load(Window *mainWindow) {
 }
 
 static void statsWindow_unload(Window *mainWindow) {
-	text_layer_destroy(stats_layer);
+  text_layer_destroy(stats_layer);
 }
 
 //handles up button events
@@ -51,9 +50,9 @@ static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
 //handles down button events
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
   if (dranks >0){
-  	dranks -= 1;
-  	snprintf(buf,sizeof(buf),"%d",dranks);
- 	  text_layer_set_text(count_layer, buf);
+    dranks -= 1;
+    snprintf(buf,sizeof(buf),"%d",dranks);
+    text_layer_set_text(count_layer, buf);
   }
   else {}
 }
@@ -62,8 +61,8 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   //text_layer_set_text(count_layer, "Select");
   if (window_stack_get_top_window() == mainWindow){
-	  window_set_fullscreen(statsWindow,true);
-	  window_stack_push(statsWindow,true);
+    window_set_fullscreen(statsWindow,true);
+    window_stack_push(statsWindow,true);
   }
 }
 
@@ -78,43 +77,40 @@ static void click_config_provider(void *context) {
 
 //animates the drink level as beverages get counted
 static void drink_display_layer_update_callback(Layer *layer, GContext* ctx) {
-	Layer *window_layer = window_get_root_layer(mainWindow);
-	GRect bounds = layer_get_bounds(window_layer);
-  graphics_draw_bitmap_in_rect(ctx,beerSprite,GRect(0,5,bounds.size.w,bounds.size.h-5));
+  Layer *window_layer = window_get_root_layer(mainWindow);
+  GRect bounds = layer_get_bounds(window_layer);
+  int drinkOriginY = 40;
+  int drinkOriginX = 30;
+  int drinkWidth = bounds.size.w - 2*drinkOriginX;
+  int drinkHeight = bounds.size.h - drinkOriginY - 10;
+  GRect drinkRect = GRect(drinkOriginX,drinkOriginY,drinkWidth,drinkHeight);
+  //graphics_draw_round_rect(ctx, drinkRect,4);
+
+ 
+  graphics_draw_bitmap_in_rect(ctx,beerSprite,GRect(0,16,bounds.size.w,bounds.size.h-16));
   
-	/*int drinkOriginY = 40;
-	int drinkOriginX = 30;
-	int drinkWidth = bounds.size.w - 2*drinkOriginX;
-	int drinkHeight = bounds.size.h - drinkOriginY - 10;
-	GRect drinkRect = GRect(drinkOriginX,drinkOriginY,drinkWidth,drinkHeight);
-	//graphics_draw_round_rect(ctx, drinkRect,4);
-  */
 
   //if under maxDranks, then image gets updated
     if (dranks<maxDranks){
-		int drinkOriginY = (bounds.size.h-50)/maxDranks*(maxDranks-dranks) + 38;
-		int drinkOriginX = 38;
-		int drinkWidth = bounds.size.w - 2*drinkOriginX;
-		int drinkHeight = bounds.size.h - drinkOriginY - 12;
-		GRect drinkRect = GRect(drinkOriginX,drinkOriginY,drinkWidth,drinkHeight);
-		graphics_fill_rect(ctx, drinkRect,2,GCornersAll);
-    graphics_context_set_compositing_mode(ctx, GCompOpAnd);
-    graphics_draw_bitmap_in_rect(ctx,foamSprite,GRect(drinkOriginX+1,drinkOriginY-8,66,8));
-	}
-	// past maxDranks, drinks are counted, but image does not change
-	else{
-		int drinkOriginY = (bounds.size.h-50)/maxDranks*(maxDranks-maxDranks) + 40;
-		int drinkOriginX = 38;
-		int drinkWidth = bounds.size.w - 2*drinkOriginX;
-		int drinkHeight = bounds.size.h - drinkOriginY - 10;
-		GRect drinkRect = GRect(drinkOriginX,drinkOriginY,drinkWidth,drinkHeight);
-		graphics_fill_rect(ctx, drinkRect,2,GCornersAll);
-    graphics_context_set_compositing_mode(ctx, GCompOpAnd);
-    graphics_draw_bitmap_in_rect(ctx,foamSprite,GRect(drinkOriginX+1,drinkOriginY-8,66,8));
-	}
-	
-	//draw white number badge background
-	graphics_context_set_fill_color(ctx, GColorWhite);
+    int drinkOriginY = (bounds.size.h-50)/maxDranks*(maxDranks-dranks) + 40;
+    int drinkOriginX = 30;
+    int drinkWidth = bounds.size.w - 2*drinkOriginX;
+    int drinkHeight = bounds.size.h - drinkOriginY - 10;
+    GRect drinkRect = GRect(drinkOriginX,drinkOriginY,drinkWidth,drinkHeight);
+    graphics_fill_rect(ctx, drinkRect,4,GCornersAll);
+  }
+  // past maxDranks, drinks are counted, but image does not change
+  else{
+    int drinkOriginY = (bounds.size.h-50)/maxDranks*(maxDranks-maxDranks) + 40;
+    int drinkOriginX = 30;
+    int drinkWidth = bounds.size.w - 2*drinkOriginX;
+    int drinkHeight = bounds.size.h - drinkOriginY - 10;
+    GRect drinkRect = GRect(drinkOriginX,drinkOriginY,drinkWidth,drinkHeight);
+    graphics_fill_rect(ctx, drinkRect,4,GCornersAll);
+  }
+  
+  //draw white number badge background
+  graphics_context_set_fill_color(ctx, GColorWhite);
   graphics_fill_circle(ctx,GPoint(71,73),13);
 }
 
@@ -153,9 +149,8 @@ static void window_load(Window *mainWindow) {
   text_layer_set_text_alignment(top_banner_layer, GTextAlignmentCenter);
   
   // adds all the layers as children to mainWindow
-  
-  layer_add_child(window_layer, drink_display_layer);
   layer_add_child(window_layer, text_layer_get_layer(top_banner_layer));
+  layer_add_child(window_layer, drink_display_layer);
 //  layer_add_child(window_layer, drink_badge_layer);
   layer_add_child(window_layer, text_layer_get_layer(count_layer));
  }
@@ -191,7 +186,6 @@ static void init(void) {
   //resource_init_current_app(&APP_RESOURCES);
   //beerSprite_handle = resource_get_handle(RESOURCES_ID_BEERSPRITE);
   beerSprite = gbitmap_create_with_resource(RESOURCE_ID_BEERSPRITE);
-  foamSprite = gbitmap_create_with_resource(RESOURCE_ID_FOAMSPRITE);
   
   
 }
@@ -199,7 +193,6 @@ static void init(void) {
 static void deinit(void) {
   window_destroy(mainWindow);
   gbitmap_destroy(beerSprite);
-  gbitmap_destroy(foamSprite);
 }
 
 int main(void) {

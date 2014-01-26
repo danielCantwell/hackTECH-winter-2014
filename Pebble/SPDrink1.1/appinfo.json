@@ -1,0 +1,23 @@
+{
+  "uuid": "46f8a8d7-dfd9-4a67-8643-1b2e494f2b78",
+  "shortName": "SPDrink1.1",
+  "longName": "SPDrink1.1",
+  "companyName": "MakeAwesomeHappen",
+  "versionCode": 2,
+  "versionLabel": "2.0.0",
+  "watchapp": {
+    "watchface": false
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+   "resources": {
+    "media": [
+      {
+        "type": "png",
+        "name": "BEERSPRITE",
+        "file": "images/beer.png"
+      }
+    ]
+  }
+}
